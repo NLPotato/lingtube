@@ -9,6 +9,9 @@ module.exports = {
         secondary: {
           DEFAULT: "#FF9C01",
         },
+        background: {
+          DEFAULT: "#eeece2",
+        },
       },
       fontFamily: {
         pthin: ["Poppins-Thin", "sans-serif"],
