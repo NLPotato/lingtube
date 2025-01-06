@@ -2,6 +2,7 @@ import "@/global.css";
 import { useEffect } from "react";
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
+import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -46,9 +47,13 @@ export default function RootLayout() {
   }
 
   return (
-    <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: true }} />
-      {/* <Stack.Screen name="+not-found" /> */}
-    </Stack>
+    <SafeAreaProvider>
+      <SafeAreaView className="flex-1">
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: true }} />
+          {/* <Stack.Screen name="+not-found" /> */}
+        </Stack>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
