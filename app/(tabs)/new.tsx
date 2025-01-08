@@ -1,23 +1,41 @@
 "use client";
 
 import Button from "@/components/Button";
-import { validatePodcastUrl, getPodcastId } from "@/utils/helpers";
+import {
+  validatePodcastUrl,
+  getPodcastId,
+  changeToLocalDateString,
+} from "@/utils/helpers";
 import { useEffect, useState } from "react";
 import { TextInput, View, Text, FlatList } from "react-native";
 import { Image } from "expo-image";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import EvilIcons from '@expo/vector-icons/EvilIcons';
 import PlaceholderImage from "@/assets/images/podcast-url-example.png";
+import he from "he";
+
+interface ChannelInfo {
+  title: string;
+  description: string;
+  link: string;
+  image: string;
+  language: string;
+  category: string;
+}
 
 interface Episode {
   title: string;
+  description: string;
   link: string;
   pubDate: string;
   audioUrl: string;
+  playTime: string;
 }
 
 const NewScreen = () => {
   const [podcastUrl, setpodcastUrl] = useState<string>("");
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(true);
+  const [channelInfo, setChannelInfo] = useState<ChannelInfo>(Object);
   const [episodes, setEpisodes] = useState<Episode[]>([]);
 
   useEffect(() => {
@@ -44,7 +62,8 @@ const NewScreen = () => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      const episodes = await response.json(); // JSON으로 응답을 처리
+      const { channelInfo, episodes } = await response.json(); // JSON으로 응답을 처리
+      setChannelInfo(channelInfo);
       setEpisodes(episodes);
     } catch (error) {
       console.log(error);
@@ -55,13 +74,31 @@ const NewScreen = () => {
   const renderItem = ({ item }: { item: Episode }) => {
     return (
       <View className="flex flex-1 flex-col mb-2">
-        <View className="mb-1 ">
-          <Text className="text-sm text-gray-500">{item.pubDate}</Text>
+        <View className="mb-1 flex flex-row items-center">
+          <Text className="text-sm text-gray-500">
+            {changeToLocalDateString(item.pubDate)} {" "}
+          </Text>
+          <EvilIcons name="clock" size={15} />
+          <Text className="text-sm text-gray-500">{item.playTime}</Text>
         </View>
-        <View className="flex flex-row relative rounded-full items-center">
+        <View className="flex flex-row relative rounded-full items-center mb-1">
           <View className="pr-14">
             <Text className="text-lg font-semibold text-pretty">
               {item.title}
+            </Text>
+            <Text className="text-md text-gray-800 text-balance">
+              {he
+                .decode(
+                  item.description
+                    .replace(/<[^>]+>/g, "")
+                    .replace(/&nbsp;/g, "")
+                    .replace(/\n/g, " ")
+                    .trim()
+                )
+                .substring(0, 200 - item.title.length) +
+                (item.description.length > 200 - item.title.length
+                  ? "..."
+                  : "")}
             </Text>
           </View>
           <View className="absolute right-2">
@@ -79,9 +116,15 @@ const NewScreen = () => {
 
   return (
     <View className="flex-1 items-center bg-background">
-      <Text className="text-2xl font-bold">학습하기</Text>
+      {channelInfo ? (
+        <Text className="text-2xl font-bold">{channelInfo.title}</Text>
+      ) : (
+        <Text className="text-2xl font-bold">학습하기</Text>
+      )}
       <Image
-        source={PlaceholderImage}
+        source={
+          channelInfo.image ? { uri: channelInfo.image } : PlaceholderImage
+        }
         className="w-[375px] h-[500px] rounded-lg"
       />
       {episodes.length > 0 ? (

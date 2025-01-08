@@ -8,3 +8,8 @@ export function getPodcastId(url: string) : string {
   const match = url.match(regex);
   return match ? match[1] : "";
 }
+
+export function changeToLocalDateString(date: string) : string {
+  const dateObj = new Date(date);
+  return dateObj.toLocaleDateString();
+}
