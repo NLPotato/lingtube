@@ -101,7 +101,7 @@ const NewScreen = () => {
                   : "")}
             </Text>
           </View>
-          <View className="absolute right-2">
+          <View className="absolute right-3">
             <Button
               props={
                 <MaterialIcons name="play-arrow" size={30} color="#eeece2" />
