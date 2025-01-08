@@ -82,11 +82,11 @@ const NewScreen = () => {
           <Text className="text-sm text-gray-500">{item.playTime}</Text>
         </View>
         <View className="flex flex-row relative rounded-full items-center mb-1">
-          <View className="pr-14">
-            <Text className="text-lg font-semibold text-pretty">
+          <View className="pr-14 gap-1">
+            <Text className="text-md font-semibold text-pretty">
               {item.title}
             </Text>
-            <Text className="text-md text-gray-800 text-balance">
+            <Text className="text-sm text-gray-800 text-balance">
               {he
                 .decode(
                   item.description
@@ -109,7 +109,7 @@ const NewScreen = () => {
             />
           </View>
         </View>
-        <View className="border-b border-gray-300 my-3" />
+        <View className="border-b border-gray-300 my-2" />
       </View>
     );
   };
