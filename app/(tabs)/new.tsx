@@ -60,13 +60,19 @@ const NewScreen = () => {
         </View>
         <View className="flex flex-row relative rounded-full items-center">
           <View className="pr-14">
-            <Text className="text-lg font-semibold text-pretty">{item.title}</Text>
+            <Text className="text-lg font-semibold text-pretty">
+              {item.title}
+            </Text>
           </View>
           <View className="absolute right-2">
-            <Button props={<MaterialIcons name="play-arrow" size={30} color="#eeece2"/>}/>
+            <Button
+              props={
+                <MaterialIcons name="play-arrow" size={30} color="#eeece2" />
+              }
+            />
           </View>
         </View>
-      <View className="border-b border-gray-300 my-3" />
+        <View className="border-b border-gray-300 my-3" />
       </View>
     );
   };
@@ -78,12 +84,6 @@ const NewScreen = () => {
         source={PlaceholderImage}
         className="w-[375px] h-[500px] rounded-lg"
       />
-      <TextInput
-        value={podcastUrl}
-        onChangeText={setpodcastUrl}
-        className="w-[320px] h-[35px] rounded-md bg-white p-2 mb-3"
-        placeholder="https://podcasts.apple.com/..."
-      />
       {episodes.length > 0 ? (
         <FlatList
           data={episodes}
@@ -92,15 +92,23 @@ const NewScreen = () => {
           className="w-[370px] h-[500px] rounded-lg"
         />
       ) : (
-        <View className="w-[320px] h-[70px] font-bold">
-          <Button
-            props={
-              <Text className={`text-white font-bold text-xl`}>Get Feed</Text>
-            }
-            onPress={() => getPodcastFeed()}
-            disabled={buttonDisabled}
+        <>
+          <TextInput
+            value={podcastUrl}
+            onChangeText={setpodcastUrl}
+            className="w-[320px] h-[35px] rounded-md bg-white p-2 mb-3"
+            placeholder="https://podcasts.apple.com/..."
           />
-        </View>
+          <View className="w-[320px] h-[70px] font-bold">
+            <Button
+              props={
+                <Text className={`text-white font-bold text-xl`}>Get Feed</Text>
+              }
+              onPress={() => getPodcastFeed()}
+              disabled={buttonDisabled}
+            />
+          </View>
+        </>
       )}
     </View>
   );
