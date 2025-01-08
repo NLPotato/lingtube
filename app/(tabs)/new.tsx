@@ -3,13 +3,22 @@
 import Button from "@/components/Button";
 import { validatePodcastUrl, getPodcastId } from "@/utils/helpers";
 import { useEffect, useState } from "react";
-import { TextInput, View, Text } from "react-native";
+import { TextInput, View, Text, FlatList } from "react-native";
 import { Image } from "expo-image";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import PlaceholderImage from "@/assets/images/podcast-url-example.png";
+
+interface Episode {
+  title: string;
+  link: string;
+  pubDate: string;
+  audioUrl: string;
+}
 
 const NewScreen = () => {
   const [podcastUrl, setpodcastUrl] = useState<string>("");
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(true);
+  const [episodes, setEpisodes] = useState<Episode[]>([]);
 
   useEffect(() => {
     if (podcastUrl.length > 0) {
@@ -17,8 +26,8 @@ const NewScreen = () => {
     }
   }, [podcastUrl]);
 
-  const getPodcastFeed = async (url: string) => {
-    if (!validatePodcastUrl(podcastUrl)){
+  const getPodcastFeed = async () => {
+    if (!validatePodcastUrl(podcastUrl)) {
       alert("Apple Podcast URL을 입력해주세요.");
       return;
     }
@@ -27,11 +36,38 @@ const NewScreen = () => {
       alert("URL에 id가 있는지 확인해 주세요.");
       return;
     }
+    try {
+      const proxyUrl = `https://genie-api.vercel.app/api/podcast?url=${encodeURIComponent(
+        podcastUrl
+      )}`;
+      const response = await fetch(proxyUrl);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const episodes = await response.json(); // JSON으로 응답을 처리
+      setEpisodes(episodes);
+    } catch (error) {
+      console.log(error);
+      alert(error); // 오류 메시지 표시
+    }
+  };
 
-    const response = await fetch(podcastUrl);
-    const data = await response.json();
-    console.log(data);
-    return data.results[0].feedUrl;
+  const renderItem = ({ item }: { item: Episode }) => {
+    return (
+      <View className="flex flex-1 flex-col">
+        <View className="text-xs text-gray-400 mb-1 mt-2">
+          <Text>{item.pubDate}</Text>
+        </View>
+        <View className="flex flex-row relative text-md rounded-full">
+          <View className="pr-10">
+            <Text>{item.title}</Text>
+          </View>
+          <View className="absolute right-0">
+            <MaterialIcons name="play-circle" size={24} color="black" />
+          </View>
+        </View>
+      </View>
+    );
   };
 
   return (
@@ -39,7 +75,7 @@ const NewScreen = () => {
       <Text className="text-2xl font-bold">학습하기</Text>
       <Image
         source={PlaceholderImage}
-        className="w-[375px] h-[700px] rounded-lg"
+        className="w-[375px] h-[500px] rounded-lg"
       />
       <TextInput
         value={podcastUrl}
@@ -47,11 +83,24 @@ const NewScreen = () => {
         className="w-[320px] h-[35px] rounded-md bg-white p-2 mb-3"
         placeholder="https://podcasts.apple.com/..."
       />
-      <Button
-        label="Get Feed"
-        onPress={() => getPodcastFeed(podcastUrl)}
-        disabled={buttonDisabled}
-      />
+      {episodes.length > 0 ? (
+        <FlatList
+          data={episodes}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.title}
+          className="w-[370px] h-[500px] rounded-lg"
+        />
+      ) : (
+        <View className="w-[320px] h-[70px] font-bold">
+          <Button
+            props={
+              <Text className={`text-white font-bold text-xl`}>Get Feed</Text>
+            }
+            onPress={() => getPodcastFeed()}
+            disabled={buttonDisabled}
+          />
+        </View>
+      )}
     </View>
   );
 };
