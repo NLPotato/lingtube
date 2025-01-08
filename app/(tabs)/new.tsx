@@ -55,18 +55,18 @@ const NewScreen = () => {
   const renderItem = ({ item }: { item: Episode }) => {
     return (
       <View className="flex flex-1 flex-col mb-2">
-        <View className="text-xs text-gray-400 mb-1 mt-2">
-          <Text>{item.pubDate}</Text>
+        <View className="mb-1 ">
+          <Text className="text-sm text-gray-500">{item.pubDate}</Text>
         </View>
         <View className="flex flex-row relative rounded-full items-center">
           <View className="pr-14">
-            <Text className="text-lg">{item.title}</Text>
+            <Text className="text-lg font-semibold text-pretty">{item.title}</Text>
           </View>
           <View className="absolute right-2">
             <Button props={<MaterialIcons name="play-arrow" size={30} color="#eeece2"/>}/>
           </View>
         </View>
-      <View className="border-b border-gray-300 my-2" />
+      <View className="border-b border-gray-300 my-3" />
       </View>
     );
   };
