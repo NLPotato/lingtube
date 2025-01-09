@@ -1,12 +1,18 @@
 import { Tabs } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { SafeAreaView } from "react-native-safe-area-context";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { View } from "react-native";
 
 export default function TabLayout() {
   return (
-    <SafeAreaView className="flex-1">
-      <Tabs screenOptions={{ headerShown: false }}>
+    <View className="flex-1">
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+          tabBarActiveTintColor: "#primary",
+          tabBarStyle: { backgroundColor: "#ffffff" },
+        }}
+      >
         <Tabs.Screen
           name="index"
           options={{
@@ -21,15 +27,15 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="new"
+          name="podcast"
           options={{
-            title: "New",
+            title: "Podcast",
             tabBarIcon: ({ color }) => (
-              <Ionicons name="add-circle" size={24} color={color} />
+              <MaterialIcons name="podcasts" size={24} color={color} />
             ),
           }}
         />
       </Tabs>
-    </SafeAreaView>
+    </View>
   );
 }
