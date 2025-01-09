@@ -7,10 +7,16 @@ import {
   changeToLocalDateString,
 } from "@/utils/helpers";
 import { useEffect, useState } from "react";
-import { TextInput, View, Text, FlatList } from "react-native";
+import {
+  TextInput,
+  View,
+  Text,
+  FlatList,
+  useWindowDimensions,
+} from "react-native";
 import { Image } from "expo-image";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import EvilIcons from '@expo/vector-icons/EvilIcons';
+import EvilIcons from "@expo/vector-icons/EvilIcons";
 import he from "he";
 
 interface ChannelInfo {
@@ -32,6 +38,9 @@ interface Episode {
 }
 
 const NewScreen = () => {
+  const { width } = useWindowDimensions();
+  const imageSize = Math.min(300, width * 0.8);
+  const contentWidth = Math.min(370, width * 0.95);
   const [podcastUrl, setpodcastUrl] = useState<string>("");
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(true);
   const [channelInfo, setChannelInfo] = useState<ChannelInfo>(Object);
@@ -40,8 +49,7 @@ const NewScreen = () => {
   useEffect(() => {
     if (podcastUrl.length > 0) {
       setButtonDisabled(false);
-    }
-    else {
+    } else {
       setButtonDisabled(true);
     }
   }, [podcastUrl]);
@@ -75,20 +83,20 @@ const NewScreen = () => {
 
   const renderItem = ({ item }: { item: Episode }) => {
     return (
-      <View className="flex flex-1 flex-col mb-2">
+      <View className="flex-1 mb-2">
         <View className="mb-1 flex flex-row items-center">
           <Text className="text-sm text-gray-500">
-            {changeToLocalDateString(item.pubDate)} {" "}
+            {changeToLocalDateString(item.pubDate)}{" "}
           </Text>
           <EvilIcons name="clock" size={15} />
           <Text className="text-sm text-gray-500">{item.playTime}</Text>
         </View>
-        <View className="flex flex-row relative rounded-full items-center mb-1">
-          <View className="pr-14 gap-1">
-            <Text className="text-md font-semibold text-pretty">
+        <View className="flex flex-row rounded-full items-center relative">
+          <View className="flex-1 pr-14">
+            <Text className="text-md font-semibold" numberOfLines={2}>
               {item.title}
             </Text>
-            <Text className="text-sm text-gray-800 text-balance">
+            <Text className="text-sm text-gray-800" numberOfLines={2}>
               {he
                 .decode(
                   item.description
@@ -103,7 +111,7 @@ const NewScreen = () => {
                   : "")}
             </Text>
           </View>
-          <View className="absolute right-3">
+          <View className="absolute right-0">
             <Button
               props={
                 <MaterialIcons name="play-arrow" size={32} color="#eeece2" />
@@ -117,52 +125,59 @@ const NewScreen = () => {
   };
 
   return (
-    <View className="flex-1 items-center bg-background w-full p-3">
-      <View className="w-[300px] h-[300px] rounded-lg">
-        <Image
-          source={{ uri: channelInfo.image }}
-          contentFit="contain"
-          className="flex-1 w-full h-full"
-          transition={1000}
-          style={{
-            width: '100%',
-            height: '100%',
-          }}
-        />
-      </View>
-      <View className="w-full h-[50px]">
+    <View className="flex-1 bg-background">
+      <View className="flex-1 items-center px-3 pt-3">
         {channelInfo ? (
-          <Text className="text-xl font-bold">{channelInfo.title}</Text>
-        ) : (
-          <Text className="text-2xl font-bold">학습하기</Text>
-        )}
-      </View>
-      {episodes.length > 0 ? (
-        <FlatList
-          data={episodes}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.title}
-          className="w-[370px] h-[500px] rounded-lg"
-        />
-      ) : (
-        <>
-          <TextInput
-            value={podcastUrl}
-            onChangeText={setpodcastUrl}
-            className="w-[320px] h-[35px] rounded-md bg-white p-2 mb-3"
-            placeholder="https://podcasts.apple.com/..."
-          />
-          <View className="w-[320px] h-[50px] font-bold mb-5">
-            <Button
-              props={
-                <Text className={`text-white font-bold text-lg`}>Get Feed</Text>
-              }
-              onPress={() => getPodcastFeed()}
-              disabled={buttonDisabled}
+          <View className="rounded-lg">
+            <Image
+              source={{ uri: channelInfo.image }}
+              contentFit="contain"
+              className="flex-1"
+              transition={1000}
+              style={{
+                width: imageSize,
+                height: imageSize,
+              }}
             />
           </View>
-        </>
-      )}
+        ) : null}
+        <View className="w-full mb-4">
+          <Text className="text-lg font-bold text-center">
+            {channelInfo.title || "학습하기"}
+          </Text>
+        </View>
+
+        {episodes.length > 0 ? (
+          <FlatList
+            data={episodes}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.title}
+            style={{ width: contentWidth }}
+            contentContainerStyle={{ paddingBottom: 20 }}
+            showsVerticalScrollIndicator={false}
+          />
+        ) : (
+          <View className="items-center w-full">
+            <TextInput
+              value={podcastUrl}
+              onChangeText={setpodcastUrl}
+              className="w-full max-w-[320px] h-[35px] rounded-md bg-white p-2 mb-3"
+              placeholder="https://podcasts.apple.com/..."
+            />
+            <View className="w-full max-w-[320px] h-[50px]">
+              <Button
+                props={
+                  <Text className={`text-white font-bold text-lg text-center`}>
+                    Get Feed
+                  </Text>
+                }
+                onPress={() => getPodcastFeed()}
+                disabled={buttonDisabled}
+              />
+            </View>
+          </View>
+        )}
+      </View>
     </View>
   );
 };
