@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import { Image } from "expo-image";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { SafeAreaView } from "react-native-safe-area-context";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 import he from "he";
 
@@ -125,7 +126,7 @@ const NewScreen = () => {
   };
 
   return (
-    <View className="flex-1 bg-background">
+    <SafeAreaView className="flex-1 bg-background">
       <View className="flex-1 items-center px-3 pt-3">
         {channelInfo ? (
           <View className="rounded-lg mb-2">
@@ -179,7 +180,7 @@ const NewScreen = () => {
           </View>
         )}
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
