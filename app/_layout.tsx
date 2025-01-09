@@ -48,12 +48,10 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView className="flex-1">
         <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: true }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           {/* <Stack.Screen name="+not-found" /> */}
         </Stack>
-      </SafeAreaView>
     </SafeAreaProvider>
   );
 }
