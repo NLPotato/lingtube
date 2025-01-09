@@ -13,8 +13,6 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import he from "he";
 
-const PlaceholderImage = require("@/assets/images/06975bf560728335.png");
-
 interface ChannelInfo {
   title: string;
   description: string;
@@ -42,6 +40,9 @@ const NewScreen = () => {
   useEffect(() => {
     if (podcastUrl.length > 0) {
       setButtonDisabled(false);
+    }
+    else {
+      setButtonDisabled(true);
     }
   }, [podcastUrl]);
 
@@ -116,20 +117,26 @@ const NewScreen = () => {
   };
 
   return (
-    <View className="flex-1 items-center bg-background">
-      {channelInfo ? (
-        <Text className="text-2xl font-bold">{channelInfo.title}</Text>
-      ) : (
-        <Text className="text-2xl font-bold">학습하기</Text>
-      )}
-      <View className="flex flex-1 w-[375px] h-[400px] rounded-lg">
+    <View className="flex-1 items-center bg-background w-full p-3">
+      <View className="w-[300px] h-[300px] rounded-lg">
         <Image
-          source={channelInfo.image }
+          source={{ uri: channelInfo.image }}
           contentFit="contain"
-          placeholder={PlaceholderImage}
+          className="flex-1 w-full h-full"
+          transition={1000}
+          style={{
+            width: '100%',
+            height: '100%',
+          }}
         />
       </View>
-
+      <View className="w-full h-[50px]">
+        {channelInfo ? (
+          <Text className="text-xl font-bold">{channelInfo.title}</Text>
+        ) : (
+          <Text className="text-2xl font-bold">학습하기</Text>
+        )}
+      </View>
       {episodes.length > 0 ? (
         <FlatList
           data={episodes}
@@ -145,10 +152,10 @@ const NewScreen = () => {
             className="w-[320px] h-[35px] rounded-md bg-white p-2 mb-3"
             placeholder="https://podcasts.apple.com/..."
           />
-          <View className="w-[320px] h-[70px] font-bold">
+          <View className="w-[320px] h-[50px] font-bold mb-5">
             <Button
               props={
-                <Text className={`text-white font-bold text-xl`}>Get Feed</Text>
+                <Text className={`text-white font-bold text-lg`}>Get Feed</Text>
               }
               onPress={() => getPodcastFeed()}
               disabled={buttonDisabled}
