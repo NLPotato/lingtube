@@ -11,8 +11,9 @@ import { TextInput, View, Text, FlatList } from "react-native";
 import { Image } from "expo-image";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import EvilIcons from '@expo/vector-icons/EvilIcons';
-import PlaceholderImage from "@/assets/images/podcast-url-example.png";
 import he from "he";
+
+const PlaceholderImage = require("@/assets/images/06975bf560728335.png");
 
 interface ChannelInfo {
   title: string;
@@ -104,7 +105,7 @@ const NewScreen = () => {
           <View className="absolute right-3">
             <Button
               props={
-                <MaterialIcons name="play-arrow" size={30} color="#eeece2" />
+                <MaterialIcons name="play-arrow" size={32} color="#eeece2" />
               }
             />
           </View>
@@ -121,12 +122,14 @@ const NewScreen = () => {
       ) : (
         <Text className="text-2xl font-bold">학습하기</Text>
       )}
-      <Image
-        source={
-          channelInfo.image ? { uri: channelInfo.image } : PlaceholderImage
-        }
-        className="w-[375px] h-[500px] rounded-lg"
-      />
+      <View className="flex flex-1 w-[375px] h-[400px] rounded-lg">
+        <Image
+          source={channelInfo.image }
+          contentFit="contain"
+          placeholder={PlaceholderImage}
+        />
+      </View>
+
       {episodes.length > 0 ? (
         <FlatList
           data={episodes}
