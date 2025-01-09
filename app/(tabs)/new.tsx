@@ -128,7 +128,7 @@ const NewScreen = () => {
     <View className="flex-1 bg-background">
       <View className="flex-1 items-center px-3 pt-3">
         {channelInfo ? (
-          <View className="rounded-lg">
+          <View className="rounded-lg mb-2">
             <Image
               source={{ uri: channelInfo.image }}
               contentFit="contain"
@@ -141,11 +141,12 @@ const NewScreen = () => {
             />
           </View>
         ) : null}
-        <View className="w-full mb-4">
-          <Text className="text-lg font-bold text-center">
-            {channelInfo.title || "학습하기"}
-          </Text>
-        </View>
+        {/* <View className="flex flex-col w-full mb-4"> */}
+        {/* TODO: add info button/page */}
+        <Text className="text-lg font-bold text-center">
+          {channelInfo.title || "학습하기"}
+        </Text>
+        {/* </View> */}
 
         {episodes.length > 0 ? (
           <FlatList
