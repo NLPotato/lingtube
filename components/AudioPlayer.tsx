@@ -112,9 +112,9 @@ export default function AudioPlayer({ episode }: { episode: Episode }) {
           minimumValue={0}
           maximumValue={duration}
           onSlidingComplete={handleSeek}
-          minimumTrackTintColor="colors-primary"
-          maximumTrackTintColor="colors-secondary"
-          thumbTintColor="colors-primary"
+          minimumTrackTintColor="black" 
+          thumbTintColor="black" 
+          tapToSeek={true}
         />
         <View className="flex-row justify-between">
           <Text className="text-sm text-gray-600">{formatTime(position)}</Text>
