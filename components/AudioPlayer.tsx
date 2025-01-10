@@ -84,7 +84,7 @@ export default function AudioPlayer({ episode }: { episode: Episode }) {
   }
 
   return (
-    <View className="flex-1 justify-between p-4">
+    <View className="justify-between p-4">
       <View className="items-center">
         <Image
           source={{
@@ -100,7 +100,7 @@ export default function AudioPlayer({ episode }: { episode: Episode }) {
         </Text>
         <Text
           className="text-base text-gray-600 text-center mb-4"
-          numberOfLines={3}
+          numberOfLines={2}
         >
           {cleanHtmlString(episode.description)}
         </Text>
