@@ -6,6 +6,13 @@ import {
   getPodcastId,
   changeToLocalDateString,
 } from "@/utils/helpers";
+import {
+  parseRssXml,
+  validateSearchResult,
+  extractChannelInfo,
+  Channel,
+  Episode,
+} from "@/utils/podcast";
 import { useEffect, useState } from "react";
 import {
   TextInput,
@@ -20,31 +27,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 import he from "he";
 
-interface ChannelInfo {
-  title: string;
-  description: string;
-  link: string;
-  image: string;
-  language: string;
-  category: string;
-}
-
-interface Episode {
-  title: string;
-  description: string;
-  link: string;
-  pubDate: string;
-  audioUrl: string;
-  playTime: string;
-}
-
-const NewScreen = () => {
+const PodcastScreen = () => {
   const { width } = useWindowDimensions();
   const imageSize = Math.min(300, width * 0.8);
   const contentWidth = Math.min(370, width * 0.95);
   const [podcastUrl, setpodcastUrl] = useState<string>("");
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(true);
-  const [channelInfo, setChannelInfo] = useState<ChannelInfo>(Object);
+  const [channelInfo, setChannelInfo] = useState<Channel>(Object);
   const [episodes, setEpisodes] = useState<Episode[]>([]);
 
   useEffect(() => {
@@ -66,16 +55,30 @@ const NewScreen = () => {
       return;
     }
     try {
-      const proxyUrl = `https://genie-api.vercel.app/api/podcast?url=${encodeURIComponent(
-        podcastUrl
-      )}`;
-      const response = await fetch(proxyUrl);
+
+      const response = await fetch(
+        `https://itunes.apple.com/lookup?id=${podcastId}`
+      );
+
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`Failed to fetch podcast data: ${response.status}`);
       }
-      const { channelInfo, episodes } = await response.json(); // JSON으로 응답을 처리
-      setChannelInfo(channelInfo);
+
+      const data = await response.json();
+
+      if (data.resultCount === 0) {
+        throw new Error("No podcast found with the provided ID");
+      }
+
+      const result = data.results[0]; // Assuming there's only one podcast in results
+
+      if (!validateSearchResult(result)) {
+        throw new Error("No podcast found with the provided ID");
+      }
+      const channelInfo = await extractChannelInfo(result);
+      const episodes = await parseRssXml(channelInfo.feedUrl);
       setEpisodes(episodes);
+      setChannelInfo(channelInfo);
     } catch (error) {
       console.log(error);
       alert(error); // 오류 메시지 표시
@@ -184,4 +187,4 @@ const NewScreen = () => {
   );
 };
 
-export default NewScreen;
+export default PodcastScreen;
