@@ -84,7 +84,7 @@ export default function AudioPlayer({ episode }: { episode: Episode }) {
   }
 
   return (
-    <View className="justify-between p-4">
+    <View className="flex justify-between p-4 md:max-w-2xl lg:max-w-3xl">
       <View className="items-center">
         <Image
           source={{

@@ -38,7 +38,7 @@ export default function EpisodeDetailScreen() {
   // }
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
+    <SafeAreaView className="flex-1 bg-background items-center">
       <AudioPlayer episode={episode} />
     </SafeAreaView>
   );
