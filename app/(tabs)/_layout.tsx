@@ -35,6 +35,15 @@ export default function TabLayout() {
             ),
           }}
         />
+        <Tabs.Screen
+          name="episode/[id]"
+          options={{
+            title: "Episode",
+            tabBarIcon: ({ color }) => (
+              <MaterialIcons name="podcasts" size={24} color={color} />
+            ),
+          }}
+        />
       </Tabs>
     </View>
   );

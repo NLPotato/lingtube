@@ -10,8 +10,8 @@ import {
   parseRssXml,
   validateSearchResult,
   extractChannelInfo,
-  Channel,
-  Episode,
+  type Channel,
+  type Episode,
 } from "@/utils/podcast";
 import { useEffect, useState } from "react";
 import {
@@ -22,12 +22,14 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { Image } from "expo-image";
+import { useRouter } from 'expo-router';
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 import he from "he";
 
 const PodcastScreen = () => {
+  const router = useRouter();
   const { width } = useWindowDimensions();
   const imageSize = Math.min(300, width * 0.8);
   const contentWidth = Math.min(370, width * 0.95);
@@ -117,6 +119,10 @@ const PodcastScreen = () => {
           </View>
           <View className="absolute right-0">
             <Button
+              onPress={() => router.push({
+                pathname: `/episode/${encodeURIComponent(item.title)}`,
+                params: { episode: JSON.stringify(item) }
+              })}
               props={
                 <MaterialIcons name="play-arrow" size={32} color="#eeece2" />
               }
