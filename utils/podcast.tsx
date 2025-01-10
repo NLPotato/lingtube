@@ -39,6 +39,7 @@ export interface Channel {
 
 export interface Episode {
   title: string;
+  guid: string;
   description: string;
   link: string;
   pubDate: string;
@@ -73,6 +74,7 @@ export async function parseRssXml(feedUrl: string) {
     const episodes: Episode[] = result.rss.channel[0].item.map(
       (item: RSSItem) => ({
         title: item.title[0],
+        guid: item.guid[0],
         link: item.link[0],
         pubDate: item.pubDate[0],
         audioUrl: item.enclosure[0].$.url,
