@@ -5,6 +5,7 @@ import {
   validatePodcastUrl,
   getPodcastId,
   changeToLocalDateString,
+  cleanHtmlString,
 } from "@/utils/helpers";
 import {
   parseRssXml,
@@ -22,11 +23,10 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { Image } from "expo-image";
-import { useRouter } from 'expo-router';
+import { useRouter } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
-import he from "he";
 
 const PodcastScreen = () => {
   const router = useRouter();
@@ -57,7 +57,6 @@ const PodcastScreen = () => {
       return;
     }
     try {
-
       const response = await fetch(
         `https://itunes.apple.com/lookup?id=${podcastId}`
       );
@@ -103,15 +102,10 @@ const PodcastScreen = () => {
               {item.title}
             </Text>
             <Text className="text-sm text-gray-800" numberOfLines={2}>
-              {he
-                .decode(
-                  item.description
-                    .replace(/<[^>]+>/g, "")
-                    .replace(/&nbsp;/g, "")
-                    .replace(/\n/g, " ")
-                    .trim()
-                )
-                .substring(0, 200 - item.title.length) +
+              {cleanHtmlString(item.description).substring(
+                0,
+                200 - item.title.length
+              ) +
                 (item.description.length > 200 - item.title.length
                   ? "..."
                   : "")}
@@ -119,10 +113,12 @@ const PodcastScreen = () => {
           </View>
           <View className="absolute right-0">
             <Button
-              onPress={() => router.push({
-                pathname: `/episode/${encodeURIComponent(item.title)}`,
-                params: { episode: JSON.stringify(item) }
-              })}
+              onPress={() =>
+                router.push({
+                  pathname: `episode/${encodeURIComponent(item.title)}`,
+                  params: { episode: JSON.stringify(item) },
+                })
+              }
               props={
                 <MaterialIcons name="play-arrow" size={32} color="#eeece2" />
               }
@@ -148,7 +144,7 @@ const PodcastScreen = () => {
                 width: imageSize,
                 height: imageSize,
               }}
-              onError={()=> console.log("이미지 로드 실패")}
+              onError={() => console.log("이미지 로드 실패")}
             />
           </View>
         ) : null}
