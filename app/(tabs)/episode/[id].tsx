@@ -1,83 +1,46 @@
-import React, { useState } from "react";
-import { View, Text, ScrollView } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useLocalSearchParams } from "expo-router";
-// import { AudioDownloader } from '@/components/AudioDownloader';
-import { type Episode } from "@/utils/podcast";
-import { changeToLocalDateString } from "@/utils/helpers";
-// import { Button } from "@/components/ui/button"
-// import { Progress } from "@/components/ui/progress"
-import { Download, CheckCircle } from "lucide-react";
+import AudioPlayer from "@/components/AudioPlayer";
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
+import { type Episode } from '@/utils/podcast';
 
-export default function EpisodeScreen() {
+// import { Configuration, OpenAIApi } from 'openai';
+
+// const configuration = new Configuration({
+//   apiKey: process.env.EXPO_PUBLIC_OPENAI_API_KEY,
+// });
+// const openai = new OpenAIApi(configuration);
+
+export default function EpisodeDetailScreen() {
   const { episode: episodeString } = useLocalSearchParams();
   const episode: Episode = JSON.parse(episodeString as string);
-  const [isDownloading, setIsDownloading] = useState(false);
-  const [downloadProgress, setDownloadProgress] = useState(0);
-  const [isDownloaded, setIsDownloaded] = useState(false);
 
-  const handleDownload = async () => {
-    setIsDownloading(true);
-    // Simulating download process
-    for (let i = 0; i <= 100; i += 10) {
-      setDownloadProgress(i);
-      await new Promise((resolve) => setTimeout(resolve, 500));
-    }
-    setIsDownloading(false);
-    setIsDownloaded(true);
-  };
+  const [isLoading, setIsLoading] = useState(false);
+  const [transcript, setTranscript] = useState<string | null>(null);
+
+
+  // async function handleGetTranscript() {
+  //   setIsLoading(true);
+  //   try {
+  //     const response = await fetch(episode.audioUrl);
+  //     const audioBlob = await response.blob();
+  //     const formData = new FormData();
+  //     formData.append('file', audioBlob, 'audio.mp3');
+  //     formData.append('model', 'whisper-1');
+
+  //     const transcriptionResponse = await openai.createTranscription(formData);
+  //     setTranscript(transcriptionResponse.data.text);
+  //   } catch (error) {
+  //     console.error('Error getting transcript:', error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // }
 
   return (
     <SafeAreaView className="flex-1 bg-background">
-      <ScrollView className="flex-1 p-4">
-        <View className="space-y-4">
-          <Text className="text-2xl font-bold">{episode.title}</Text>
-          <Text className="text-sm text-gray-500">
-            {changeToLocalDateString(episode.pubDate)} • {episode.playTime}
-          </Text>
-          <Text className="text-base">{episode.description}</Text>
-
-          {/* <View className="space-y-2">
-          {!isDownloaded && (
-            <Button
-              onPress={handleDownload}
-              disabled={isDownloading}
-              className="w-full"
-            >
-              {isDownloading ? (
-                <View className="flex-row items-center">
-                  <Download className="mr-2 h-4 w-4 animate-spin" />
-                  Downloading...
-                </View>
-              ) : (
-                <View className="flex-row items-center">
-                  <Download className="mr-2 h-4 w-4" />
-                  Download Episode
-                </View>
-              )}
-            </Button>
-          )}
-
-          {isDownloading && (
-            <View className="space-y-2">
-              <Progress value={downloadProgress} className="w-full" />
-              <Text className="text-center">{downloadProgress}% Downloaded</Text>
-            </View>
-          )}
-
-          {isDownloaded && (
-            <View className="flex-row items-center justify-center space-x-2">
-              <CheckCircle className="h-5 w-5 text-green-500" />
-              <Text className="text-green-500">Episode Downloaded</Text>
-            </View>
-          )}
-        </View> */}
-
-          {/* {isDownloaded && (
-          // <AudioDownloader audioUrl={episode.enclosure.url} episodeTitle={episode.title} />
-        )} */}
-        </View>
-      </ScrollView>
+      <AudioPlayer episode={episode} />
     </SafeAreaView>
   );
 }
+

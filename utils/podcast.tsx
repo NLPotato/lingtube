@@ -45,6 +45,7 @@ export interface Episode {
   pubDate: string;
   audioUrl: string;
   playTime: string;
+  imageUrl: string;
 }
 
 export async function extractChannelInfo(data: Object) {
@@ -80,6 +81,7 @@ export async function parseRssXml(feedUrl: string) {
         audioUrl: item.enclosure[0].$.url,
         description: item.description[0],
         playTime: item["itunes:duration"] ? item["itunes:duration"][0] : "",
+        imageUrl: item["itunes:image"] ? item["itunes:image"][0].$.href : "",
       })
     );
     return episodes;
