@@ -131,20 +131,23 @@ const PodcastScreen = () => {
   return (
     <SafeAreaView className="flex-1 bg-background">
       <View className="flex-1 items-center px-3 pt-3">
-        {channelInfo ? (
+        {channelInfo && channelInfo.artworkUrl600 ? (
           <View className="rounded-lg mb-2">
             <Image
-              source={{ uri: channelInfo.image }}
+              source={{ uri: channelInfo.artworkUrl600 }}
               contentFit="contain"
-              className="flex-1"
+              // className="flex-1"
               transition={1000}
               style={{
                 width: imageSize,
                 height: imageSize,
               }}
+              onError={()=> console.log("이미지 로드 실패")}
             />
           </View>
-        ) : null}
+        ) : (
+          <Text>이미지 로드 실패</Text>
+        )}
         {/* <View className="flex flex-col w-full mb-4"> */}
         {/* TODO: add info button/page */}
         <Text className="text-lg font-bold text-center">
@@ -166,7 +169,7 @@ const PodcastScreen = () => {
             <TextInput
               value={podcastUrl}
               onChangeText={setpodcastUrl}
-              className="w-full max-w-[320px] h-[35px] rounded-md bg-white p-2 mb-3"
+              className={`w-full max-w-[320px] h-[35px] rounded-md bg-white p-2 mb-3`}
               placeholder="https://podcasts.apple.com/..."
             />
             <View className="w-full max-w-[320px] h-[50px]">
