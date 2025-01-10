@@ -145,9 +145,7 @@ const PodcastScreen = () => {
               onError={()=> console.log("이미지 로드 실패")}
             />
           </View>
-        ) : (
-          <Text>이미지 로드 실패</Text>
-        )}
+        ) : null}
         {/* <View className="flex flex-col w-full mb-4"> */}
         {/* TODO: add info button/page */}
         <Text className="text-lg font-bold text-center">

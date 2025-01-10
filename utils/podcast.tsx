@@ -1,4 +1,4 @@
-import * as xml2js from "xml2js";
+import util from "util";
 
 interface RSSItem {
   title: string;
@@ -61,11 +61,14 @@ export async function extractChannelInfo(data: Object) {
 }
 
 export async function parseRssXml(feedUrl: string) {
+  const parseString = require("react-native-xml2js").parseString;
+  const parseStringPromise = util.promisify(parseString);
+
   try {
     const response = await fetch(feedUrl);
     const data = await response.text();
-    const parser = new xml2js.Parser();
-    const result = await parser.parseStringPromise(data);
+    const cleanedString = data.replace("\ufeff", "");
+    const result = await parseStringPromise(cleanedString);
 
     const episodes: Episode[] = result.rss.channel[0].item.map(
       (item: RSSItem) => ({
@@ -74,7 +77,7 @@ export async function parseRssXml(feedUrl: string) {
         pubDate: item.pubDate[0],
         audioUrl: item.enclosure[0].$.url,
         description: item.description[0],
-        playTime: item["itunes:duration"] ? item["itunes:duration"] : "",
+        playTime: item["itunes:duration"] ? item["itunes:duration"][0] : "",
       })
     );
     return episodes;
